@@ -48,7 +48,6 @@ func (userRepo *UserRepository) FindUserByName(user_name string) (*models.User, 
 func (userRepo *UserRepository) FindAllUsers() ([]*models.User, error) {
 	find_users := &[]*models.User{}
 	result := userRepo.db.Find(find_users)
-
 	if result.RowsAffected < 1 {
 		return nil, errors.New("not found user")
 	}
