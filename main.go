@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	//path 중첩 문제 해결법 https://github.com/gofiber/fiber/issues/623
 	app := fiber.New(
 		fiber.Config{StrictRouting: true},
 	)
@@ -38,6 +39,7 @@ func main() {
 			"data": users,
 		})
 	})
+	//순서 중요
 	app.Get("/users/search", func(c *fiber.Ctx) error {
 		parma := c.Query("name")
 		user, err := userService.FindUserByName(parma)
