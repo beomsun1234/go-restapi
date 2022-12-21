@@ -19,7 +19,7 @@ func NewSqlite() *Sqlite {
 
 func (c *Sqlite) Connection() {
 	var err error
-	c.SqliteDB, err = gorm.Open(sqlite.Open("/github.com/beomsun1234/go-restapi/database/sqlitedb/gorm.db"), &gorm.Config{
+	c.SqliteDB, err = gorm.Open(sqlite.Open("../database/sqlitedb/gorm.db"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
