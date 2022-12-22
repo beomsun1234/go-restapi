@@ -13,12 +13,14 @@ type UserServiceInterface interface {
 }
 
 type UserService struct {
-	userRepo repository.UserRepositoryInterface
+	userRepo      repository.UserRepositoryInterface
+	userCacheRepo repository.UserCacheRepositoryInterface
 }
 
-func NewUserService(di_userRepo repository.UserRepositoryInterface) UserServiceInterface {
+func NewUserService(di_userRepo repository.UserRepositoryInterface, di_userCacheRepo repository.UserCacheRepositoryInterface) UserServiceInterface {
 	return &UserService{
-		userRepo: di_userRepo,
+		userRepo:      di_userRepo,
+		userCacheRepo: di_userCacheRepo,
 	}
 }
 
@@ -27,6 +29,7 @@ func (u *UserService) FindUserById(user_id int) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	u.userCacheRepo.SetData(find_user)
 	return find_user, nil
 }
 
@@ -43,6 +46,7 @@ func (u *UserService) FindUsers() ([]*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	u.userCacheRepo.SetDatas(find_users)
 	return find_users, nil
 }
 
@@ -51,5 +55,6 @@ func (u *UserService) CreateUser(user *models.User) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	u.userCacheRepo.DelDatasByKey("users")
 	return new_user, nil
 }
