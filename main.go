@@ -2,6 +2,7 @@ package main
 
 import (
 	"github/beomsun1234/go-restapi/database"
+	"github/beomsun1234/go-restapi/middleware"
 	"github/beomsun1234/go-restapi/models"
 	"github/beomsun1234/go-restapi/repository"
 	"github/beomsun1234/go-restapi/service"
@@ -16,21 +17,24 @@ func main() {
 	app := fiber.New(
 		fiber.Config{StrictRouting: true},
 	)
-
 	db := database.NewPostgres()
 
 	if db.Connection() != nil {
 		panic("db error")
 	}
 	db.PostgresDB.AutoMigrate(&models.User{})
+	cacheDb := database.NewRedisDB()
+	cacheDb.RedisConnect()
 
 	userRepo := repository.NewUserRepository(db.PostgresDB)
-	userService := service.NewUserService(userRepo)
+	userCacheRepo := repository.NewUserCacheRepository(cacheDb.Rdb)
+	userCacheMiddleware := middleware.NewUserCacheMiddleware(userCacheRepo)
+	userService := service.NewUserService(userRepo, userCacheRepo)
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Status(200).SendString("hello")
 	})
 
-	app.Get("/users", func(c *fiber.Ctx) error {
+	app.Get("/users", userCacheMiddleware.GetCacheUsers(), func(c *fiber.Ctx) error {
 		users, err := userService.FindUsers()
 		if err != nil {
 			return c.Status(404).SendString(err.Error())
@@ -50,7 +54,7 @@ func main() {
 			"data": user,
 		})
 	})
-	app.Get("/users/:userId", func(c *fiber.Ctx) error {
+	app.Get("/users/:userId", userCacheMiddleware.GetCacheUserById(), func(c *fiber.Ctx) error {
 		parma := c.Params("userId")
 		id, err := strconv.Atoi(parma)
 
