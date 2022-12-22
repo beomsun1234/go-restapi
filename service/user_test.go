@@ -10,14 +10,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var (
+	us           UserServiceInterface
+	mockUserRepo *mocks.MockUserRepository
+)
+
+func setUpUserService() {
+	mockUserRepo = new(mocks.MockUserRepository)
+	mockUserCacheRepo := mocks.NewMockUserCacheRepository()
+
+	us = NewUserService(mockUserRepo, mockUserCacheRepo)
+}
+
 func Test_UserService_FindUserById(t *testing.T) {
 	t.Run("성공", func(t *testing.T) {
 		find_id := 1
 		mockUser := models.NewUser().BuildName("park").BuildId(1)
 
-		mockUserRepo := new(mocks.MockUserRepository)
-		us := NewUserService(mockUserRepo)
-
+		setUpUserService()
 		mockUserRepo.On("FindUserById", find_id).Return(mockUser, nil)
 
 		find_user, err := us.FindUserById(find_id)
@@ -29,10 +39,7 @@ func Test_UserService_FindUserById(t *testing.T) {
 
 	t.Run("실패", func(t *testing.T) {
 		find_id := 10
-
-		mockUserRepo := new(mocks.MockUserRepository)
-		us := NewUserService(mockUserRepo)
-
+		setUpUserService()
 		mockUserRepo.On("FindUserById", find_id).Return(nil, errors.New("not found"))
 
 		find_user, err := us.FindUserById(find_id)
@@ -46,10 +53,7 @@ func Test_UserService_FindByName(t *testing.T) {
 	t.Run("성공", func(t *testing.T) {
 		name := "park"
 		mockUser := models.NewUser().BuildName("park").BuildId(1)
-
-		mockUserRepo := new(mocks.MockUserRepository)
-		us := NewUserService(mockUserRepo)
-
+		setUpUserService()
 		mockUserRepo.On("FindUserByName", name).Return(mockUser, nil)
 
 		find_user, err := us.FindUserByName(name)
@@ -60,10 +64,7 @@ func Test_UserService_FindByName(t *testing.T) {
 	})
 	t.Run("실패", func(t *testing.T) {
 		name := "park"
-
-		mockUserRepo := new(mocks.MockUserRepository)
-		us := NewUserService(mockUserRepo)
-
+		setUpUserService()
 		mockUserRepo.On("FindUserByName", name).Return(nil, errors.New("not found"))
 
 		find_user, err := us.FindUserByName(name)
@@ -81,10 +82,7 @@ func Test_UserService_FindAllUsers(t *testing.T) {
 			models.NewUser().BuildId(2).BuildName("kim"),
 			models.NewUser().BuildId(3).BuildName("cho"),
 		}
-
-		mockUserRepo := new(mocks.MockUserRepository)
-		us := NewUserService(mockUserRepo)
-
+		setUpUserService()
 		mockUserRepo.On("FindAllUsers").Return(mockUsers, nil)
 
 		find_users, err := us.FindUsers()
@@ -95,10 +93,7 @@ func Test_UserService_FindAllUsers(t *testing.T) {
 
 	})
 	t.Run("실패", func(t *testing.T) {
-
-		mockUserRepo := new(mocks.MockUserRepository)
-		us := NewUserService(mockUserRepo)
-
+		setUpUserService()
 		mockUserRepo.On("FindAllUsers").Return(nil, errors.New("not found"))
 
 		find_users, err := us.FindUsers()
@@ -112,10 +107,7 @@ func Test_UserService_CreateUser(t *testing.T) {
 	t.Run("성공", func(t *testing.T) {
 
 		mockUser := models.NewUser().BuildName("park").BuildId(1)
-
-		mockUserRepo := new(mocks.MockUserRepository)
-		us := NewUserService(mockUserRepo)
-
+		setUpUserService()
 		mockUserRepo.On("CreateUser", mockUser).Return(mockUser, nil)
 
 		find_user, err := us.CreateUser(mockUser)
@@ -128,9 +120,7 @@ func Test_UserService_CreateUser(t *testing.T) {
 	t.Run("실패", func(t *testing.T) {
 
 		mockUser := models.NewUser().BuildName("park").BuildId(1)
-		mockUserRepo := new(mocks.MockUserRepository)
-		us := NewUserService(mockUserRepo)
-
+		setUpUserService()
 		mockUserRepo.On("CreateUser", mockUser).Return(nil, errors.New("db error"))
 
 		find_users, err := us.CreateUser(mockUser)
