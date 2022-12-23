@@ -1,6 +1,6 @@
 package database
 
-import "github.com/go-redis/redis/v9"
+import "github.com/go-redis/redis/v8"
 
 type RedisDB struct {
 	Rdb *redis.Client
@@ -16,4 +16,5 @@ func (r *RedisDB) RedisConnect() {
 		Password: "", // no password set
 		// use default DB
 	})
+
 }

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	redis "github.com/go-redis/redis/v9"
+	redis "github.com/go-redis/redis/v8"
 )
 
 type UserCacheRepositoryInterface interface {

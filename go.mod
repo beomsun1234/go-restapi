@@ -19,6 +19,7 @@ require (
 	github.com/glebarez/go-sqlite v1.20.0 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-redis/redis/v9 v9.0.0-rc.2 // indirect
+	github.com/go-redis/redismock/v8 v8.0.6 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.13.0 // indirect
