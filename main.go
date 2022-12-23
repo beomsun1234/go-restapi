@@ -34,6 +34,20 @@ func main() {
 		return c.Status(200).SendString("hello")
 	})
 
+	app.Post("/users", func(c *fiber.Ctx) error {
+		p := &models.User{}
+		err := c.BodyParser(p)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{"data": err})
+		}
+		user, err := userService.CreateUser(p)
+		if err != nil {
+			return c.Status(404).SendString(err.Error())
+		}
+		return c.Status(200).JSON(fiber.Map{
+			"data": user,
+		})
+	})
 	app.Get("/users", userCacheMiddleware.GetCacheUsers(), func(c *fiber.Ctx) error {
 		users, err := userService.FindUsers()
 		if err != nil {
