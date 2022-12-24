@@ -1,5 +1,5 @@
 # go-restapi
-📚 Go RestAPI fiber, gorm
+📚 Go RestAPI fiber, gorm, redis, test
 
 ## Test
 
