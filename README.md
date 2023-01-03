@@ -13,7 +13,7 @@
 ![image](https://user-images.githubusercontent.com/68090443/209333170-058a7f81-d3f4-4a2c-9596-86efec52a24d.png)
 
 
-## postgres read, write 설정
+## Gorm, postgres read, write 설정
 
 
     //기본적은 write 역활
